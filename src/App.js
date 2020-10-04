@@ -4,15 +4,19 @@ import './App.css';
 
 import Main from './components/MainComponent';
 import { Navbar, NavbarBrand } from 'reactstrap';
+import { BrowserRouter } from 'react-router-dom';
 
 
 class App extends Component  {
 
   render(){
   return (
- <div>
-  <Main />
+
+  <BrowserRouter>
+    <div>
+       <Main />
     </div>
+  </BrowserRouter>
 
   );
  }
