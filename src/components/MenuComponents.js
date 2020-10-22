@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
 import {Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle } from 'reactstrap';
-
+import {Link} from 'react-router-dom'
 import DishDetail from './DetailDish';
 
 class Menu extends Component{
@@ -48,7 +48,8 @@ class Menu extends Component{
 
                 <div key = {dish.id} className="col-12 col-md-5 m-1">
 
-                    <Card onClick = {()=>this.onDishSelect(dish)}>
+                    <Card>
+                        <Link to
                         <CardImg width="100%"  object src = {dish.image} alt = {dish.name}/>
 
                         <CardImgOverlay>
