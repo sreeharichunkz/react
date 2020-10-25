@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem, Button, Col, Label, Modal, ModalBody, ModalHeader, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import {Control, Errors, LocalForm} from "react-redux-form";
-
+import {Loading} from './LoadingComponent';
 
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
@@ -24,10 +24,10 @@ class CommentForm extends Component{
             isModalOpen: !this.state.isModalOpen
         })
     }
-    handleSubmit(event) {
+    handleSubmit(values) {
         this.toggleModal();
-        alert("Submitted.");
-        event.preventDefault();
+      this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
+
 
     }
 
@@ -57,14 +57,14 @@ class CommentForm extends Component{
                                 </Col>
                             </Row>
                             <Row className={"form-group"}>
-                                <Label htmlFor={"name"} xs={12}>
+                                <Label htmlFor={"author"} xs={12}>
                                     Your Name
                                 </Label>
                                 <Col xs={12}>
-                                    <Control.text model={".name"} id={"name"} className={"form-control"} name={"name"}
+                                    <Control.text model={".author"} id={"author"} className={"form-control"} name={"author"}
                                                   placeholder={"Your Name"}
                                                   validators={{required, minLength: minLength(3), maxLength:maxLength(15)}}/>
-                                    <Errors model={".name"} className={"text-danger"}
+                                    <Errors model={".author"} className={"text-danger"}
                                             show={"touched"} messages={{
                                         required: 'Required ',
                                         minLength: 'Must be greater than 2 characters',
@@ -116,7 +116,7 @@ function RenderDish({dish}){
         );
 }
 
-function RenderComments({comments}){
+function RenderComments({comments, addComment,dishId}){
     return (
         <div className={"col-12 col-md-5 m-1"}>
             <div>
@@ -140,12 +140,32 @@ function RenderComments({comments}){
                     })
                 }
             </ul>
-            <CommentForm/>
+            <CommentForm dishId={dishId} addComment={addComment}/>
         </div>
     );
 }
 
 function DishDetail(props){
+  if(props.isLoading){
+    return(
+      <div className="container">
+        <div className="row">
+            <Loading />
+        </div>
+      </div>
+    );
+  }
+  else if(props.errMess){
+    return(
+      <div className="container">
+        <div className="row">
+            <h4>{props.errMess}</h4>
+        </div>
+      </div>
+    );
+
+  }
+  else if(props.dish != null){
         return(
             <div className="container">
                 <div className="row">
@@ -163,10 +183,12 @@ function DishDetail(props){
                     <div className="col-12 col-md-5 m-1">
                         <RenderDish dish={props.dish} />
                     </div>
-                    <RenderComments comments={props.comments} />
+                    <RenderComments comments={props.comments}
+                      addComment={props.addComment}
+                      dishId={props.dish.id} />
                 </div>
             </div>
-        )
+        )}
 }
 
 export default DishDetail;
